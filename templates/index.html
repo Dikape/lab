@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Множення матриць</title>
+</head>
+<body>
+    <h3>Лаба 5. Касянчик Дмитро ІС-32</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.number }}
+        <input type="submit" class="button" value="Порахувати">
+    </form>
+    {% if time and matrix_c%}
+        <div style="display: inline">
+            <div style="display: inline-block;width: 40%">
+                    <b>Початкова матриця А</b><br/>
+                    {% for matrix in matrix_a %}
+                        {{ matrix }}
+                        <br/>
+                    {% endfor %}
+
+            </div>
+            <div class="row" style="display: inline-block;width: 40%">
+                    <b>Початкова матриця B</b><br/>
+                    {% for matrix in matrix_b %}
+                        {{ matrix }}
+                        <br/>
+                    {% endfor %}
+            </div>
+        </div>
+        <div style="display: inline">
+            <div style="display: inline-block;width: 40%">
+                <h4>Сервер:</h4>
+                    <b>Час роботи</b>: {{ time }}
+                <br>
+                <b>Отримана матриця</b><br/>
+                {% for matrix in matrix_c %}
+                    {{ matrix }}
+                    <br/>
+                {% endfor %}
+            </div>
+            <div class="row" style="display: inline-block;width: 40%">
+                <h4>Клієнт:</h4>
+                <b>Час роботи</b>: <span id="time"></span>
+                <br>
+                <b>Отримана матриця</b><br/>
+                <div id="matrix_c"></div>
+            </div>
+        </div>
+        <script>
+
+                var start = performance.now();
+                var number = document.getElementById("id_number").value;
+                var matrix_a = {{ matrix_a }};
+                var matrix_b = {{ matrix_b }};
+                var matrix_c = [];
+                for (var i=0; i < number; i++){
+                    var row = [];
+                    for (var j=0; j < number; j++) {
+                        var value = 0;
+                        for (var k=0; k < number; k++) {
+                            value += (matrix_a[i][k] * matrix_b[k][j]);
+                        }
+                        row.push(value)
+                    }
+                    matrix_c.push(row)
+                }
+                var end = performance.now();
+                document.getElementById("time").innerHTML = end-start;
+                var show_matrix = '';
+                for (var i=0; i < number; i++){
+                    show_matrix += '['
+                    show_matrix += matrix_c[i].join(', ')
+                    show_matrix += ']<br/>'
+                }
+                document.getElementById("matrix_c").innerHTML = show_matrix;
+
+        </script>
+    {% endif %}
+    </body>
+    </html>
